@@ -40,11 +40,8 @@ vector=anchorsPosition(1000)
 xAnchors=vector[0]
 yAnchors=vector[1]
 
-plt.plot(xAnchors,yAnchors,"d",markersize=15)
+plt.plot(xAnchors,yAnchors,"o",markersize=15)
 #plt.show()
-
-print len(xAnchors)
-
 
 def drawCercles(_X,_Y,_R):
 	"""
@@ -56,24 +53,41 @@ def drawCercles(_X,_Y,_R):
 	cy=[]
 	for k in range(4):
 		for i in range(720):
-			print _R[k]
 			cx.append(_X[k]+_R[k]*sin(ome[i]))
-
 			cy.append(_Y[k]+_R[k]*cos(ome[i]))
-	plt.plot(cx,cy)
+	plt.plot(cx,cy,"--")
 	# plt.show()
 
-Ray=[500,600,300,500]
+Ray=[1000*sqrt(2),1000,0,1000]
 drawCercles(xAnchors,yAnchors,Ray)
 
 def robotMove():
 	t=linspace(0,10,100)
-	x=t**3
-	y=100*t
+	x=100*t
+	y=t**3
 	plt.plot(x,y)
 	plt.show()
-
 robotMove()
+
+def computeXY():
+	"""
+		-- bruit rand pour simuler les capteurs de distance
+	"""
+def distanceSensors():
+	dvector=[]
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
