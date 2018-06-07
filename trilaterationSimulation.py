@@ -25,8 +25,6 @@ from math import *
 def anchorsPosition(delta):
 	"""
 	Cette fonction defini la position de l'emeteur i en _Xa[i],_Ya[i]
-	_Xa,_Ya deux lists de coordonnees vides (a definir avant l'appel de la fonction)
-
 	++TODO:	Rendre la fonction adaptable en nombre d'emetteurs, en suivant les methodes
 			de placement evoque dans "Roa et al. - 2007 - Optimal placement of sensors for trilateration Re"
 	"""
@@ -42,7 +40,7 @@ vector=anchorsPosition(1000)
 xAnchors=vector[0]
 yAnchors=vector[1]
 
-plt.plot(xAnchors,yAnchors,"d",markersize=30)
+plt.plot(xAnchors,yAnchors,"d",markersize=15)
 #plt.show()
 
 print len(xAnchors)
@@ -50,7 +48,7 @@ print len(xAnchors)
 
 def drawCercles(_X,_Y,_R):
 	"""
-	
+
 	"""
 	ome=linspace(0,2*pi,720);
 	i=0
@@ -63,9 +61,25 @@ def drawCercles(_X,_Y,_R):
 
 			cy.append(_Y[k]+_R[k]*cos(ome[i]))
 	plt.plot(cx,cy)
+	# plt.show()
+
+Ray=[500,600,300,500]
+drawCercles(xAnchors,yAnchors,Ray)
+
+def robotMove():
+	t=linspace(0,10,100)
+	x=t**3
+	y=100*t
+	plt.plot(x,y)
 	plt.show()
 
-Ray=[500,200,600,100]
-drawCercles(xAnchors,yAnchors,Ray)
+robotMove()
+
+
+
+
+
+
+
 
 
