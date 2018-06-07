@@ -38,49 +38,34 @@ def anchorsPosition(delta):
 
 
 vector=anchorsPosition(1000)
-"""
-print vector
-plt.plot(vector[0],vector[1],"d",markersize=30)
-plt.show()
-"""
+
+xAnchors=vector[0]
+yAnchors=vector[1]
+
+plt.plot(xAnchors,yAnchors,"d",markersize=30)
+#plt.show()
+
+print len(xAnchors)
 
 
+def drawCercles(_X,_Y,_R):
+	"""
+	
+	"""
+	ome=linspace(0,2*pi,720);
+	i=0
+	cx=[]
+	cy=[]
+	for k in range(4):
+		for i in range(720):
+			print _R[k]
+			cx.append(_X[k]+_R[k]*sin(ome[i]))
 
+			cy.append(_Y[k]+_R[k]*cos(ome[i]))
+	plt.plot(cx,cy)
+	plt.show()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Ray=[500,200,600,100]
+drawCercles(xAnchors,yAnchors,Ray)
 
 
