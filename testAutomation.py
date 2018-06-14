@@ -23,8 +23,8 @@ class test(object):
         self.A=[]                  # [[A11,A12],...,[An1,An2]]                           / computeAB() \\ A est unique pour chaque shèma de balises
         self.b=[]                  # [[b11,...,b1n],...,[bm1,...,bmn]] m100,n4           / computeAB()  \\ b est unique pour chaque point du robot
         self.approXY = []          # [[x0,..,xn],[y0,..,yn]]                             / computeAB() -> leastSuareQR() /
-    def index(self):
-        
+    
+    
     def anchorsPosition(self,delta):
         _Xaux=[0,0,delta,delta]
         _Yaux=[0,delta,delta,0]
@@ -32,7 +32,6 @@ class test(object):
 
     def rightRayons(self):
         self.ray=[]
-
         for k in range(len(self.robotXY[0])):
             auxray=[]
             position=[]
@@ -43,7 +42,6 @@ class test(object):
                 position.append([self.robotXY[0][k],self.robotXY[1][k]])
                 auxray.append(linalg.norm(xyanchor-position[i]))
             self.ray.append(auxray)
-        
 
     def distanceSensors(self):
         self.mray=[]
@@ -64,7 +62,6 @@ class test(object):
         _x=self.anchors[0]
         _y=self.anchors[1]
         self.computeA()
-#---
         self.b=[]
         for k in range(len(self.robotXY[0])):
             auxb=[]
@@ -72,7 +69,6 @@ class test(object):
                 auxb.append(0.5*(self.mray[k][0]**2-self.mray[k][i]**2+(_x[i]-_x[0])**2+(_y[i]-_y[0])**2))
             
             self.b.append(auxb)
-#---
     def leastSquareQR(self):
         x1=[]
         q,r=linalg.qr(self.A)
@@ -89,7 +85,6 @@ class test(object):
             newx.append(position[0][0])
             newy.append(position[0][1])
             position=[]
-        
         self.approXY.append(newx)
         self.approXY.append(newy)
         
