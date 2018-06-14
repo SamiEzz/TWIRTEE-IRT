@@ -6,19 +6,16 @@ from random import *
 class test(object):
     def __init__(self,rate=0.05):
         self.plotNum = 4           #
-        self.anchors = []          # [_Xaux,_Yaux]                   / anchorsPosition() //
-        
-        self.ray=[]                # [[R00,,,R0n],...,[Rm0,...,Rmn]] / rightPosition()
-        self.mray=[]               # [[R00,,,R0n],...,[Rm0,...,Rmn]] / distanceSensors()
-        self.rate = rate           # 0 < rate < 1                    / input
-        self.mode = 0              # 1,2,3 ?                         / input
-        self.cercles=[]            # [[Cx0,..,Cxn],[Cy0,...,Cyn]]    / drawCercles()
-        
-        self.robotXY = []          # [[x0,..,xn],[y0,..,yn]]         / robotMove()
-        
-        self.A=[]                  # [[A00,A01],...,[An0,An1]]       / computeAB() \\ A est unique pour chaque shèma de balises
-        self.b=[]                  # [b1,...,bn]                     / computeAB()  \\ b est unique pour chaque point du robot
-        self.approXY = [[],[]]     # [[x0,..,xn],[y0,..,yn]]         / computeAB() -> leastSuareQR() /
+        self.anchors = []          # [_Xaux,_Yaux]                                       / anchorsPosition() //
+        self.ray=[]                # [[R11,,,R1n],...,[Rm1,...,Rmn]]                     / rightPosition()
+        self.mray=[]               # [[R11,,,R1n],...,[Rm1,...,Rmn]]                     / distanceSensors()
+        self.rate = rate           # 0 < rate < 1                                        / input
+        self.mode = 0              # 1,2,3 ?                                             / input
+        self.cercles=[]            # [[Cx1,..,Cxn],[Cy1,...,Cyn]] n=720*len(ray[0])      / drawCercles()
+        self.robotXY = []          # [[x1,..,xn],[y1,..,yn]]                             / robotMove()
+        self.A=[]                  # [[A11,A12],...,[An1,An2]]                           / computeAB() \\ A est unique pour chaque shèma de balises
+        self.b=[]                  # [[b11,...,b1n],...,[bm1,...,bmn]] m100,n4           / computeAB()  \\ b est unique pour chaque point du robot
+        self.approXY = []          # [[x0,..,xn],[y0,..,yn]]                             / computeAB() -> leastSuareQR() /
     def anchorsPosition(self,delta):
         _Xaux=[0,0,delta,delta]
         _Yaux=[0,delta,delta,0]
@@ -56,12 +53,13 @@ class test(object):
         _x=self.anchors[0]
         _y=self.anchors[1]
         self.computeA()
+
         self.b=[]
-        
         for k in range(len(self.robotXY[0])):
             auxb=[]
             for i in range(1,len(self.ray[0])):
                 auxb.append(0.5*(self.ray[k][i]**2-self.ray[k][i]**2+(_x[i]-_x[0])**2+(_y[i]-_y[0])**2))
+            print(auxb)
             self.b.append(auxb)
 
     def leastSquareQR(self):
@@ -71,11 +69,11 @@ class test(object):
         qtrns=transpose(q)
         x1=matmul(rinv,qtrns)
         print(x1) #--------------
-        
+
         self.approXY=[]
-        auxapprox=[]
         for k in range(len(self.robotXY[0])):
             self.approXY.append(matmul(x1,self.b[k]))
+
 
     def robotMove(self):
         t=linspace(0,10,100)
@@ -94,15 +92,18 @@ class test(object):
                 cy.append(self.anchors[1][k]+_R[k]*cos(teta[i]))
         self.cercles=[cx,cy]
 
-test1=test(0.04)
-test1.anchorsPosition(700)
+test1=test(0.1)
+test1.anchorsPosition(1000)
 test1.robotMove()
 test1.rightRayons()
 test1.distanceSensors()
 test1.computeAB()
-#print(test1.b)
+
 test1.leastSquareQR()
 test1.drawCercles(test1.mray[50])
 
-plt.plot(test1.robotXY[0],test1.robotXY[1])
+
+print(len(test1.b))
+#plt.plot(test1.robotXY[0],test1.robotXY[1])
 plt.plot(test1.cercles[0],test1.cercles[1])
+print(test1.approXY[0])
