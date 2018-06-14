@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jun 14 21:22:03 2018
+
+@author: Sami
+"""
+
 import matplotlib.pyplot as plt
 from numpy import *
 from math import pi
@@ -16,6 +23,8 @@ class test(object):
         self.A=[]                  # [[A11,A12],...,[An1,An2]]                           / computeAB() \\ A est unique pour chaque shèma de balises
         self.b=[]                  # [[b11,...,b1n],...,[bm1,...,bmn]] m100,n4           / computeAB()  \\ b est unique pour chaque point du robot
         self.approXY = []          # [[x0,..,xn],[y0,..,yn]]                             / computeAB() -> leastSuareQR() /
+    def index(self):
+        
     def anchorsPosition(self,delta):
         _Xaux=[0,0,delta,delta]
         _Yaux=[0,delta,delta,0]
@@ -26,13 +35,15 @@ class test(object):
 
         for k in range(len(self.robotXY[0])):
             auxray=[]
+            position=[]
             for i in range(len(self.anchors[1])):
                 xyanchor=array((0,0))
                 xyanchor[0]=self.anchors[0][i]
                 xyanchor[1]=self.anchors[1][i]
-                position=[self.robotXY[0][k],self.robotXY[1][k]]
-                auxray.append(linalg.norm(xyanchor-position))
+                position.append([self.robotXY[0][k],self.robotXY[1][k]])
+                auxray.append(linalg.norm(xyanchor-position[i]))
             self.ray.append(auxray)
+        
 
     def distanceSensors(self):
         self.mray=[]
@@ -53,27 +64,36 @@ class test(object):
         _x=self.anchors[0]
         _y=self.anchors[1]
         self.computeA()
-
+#---
         self.b=[]
         for k in range(len(self.robotXY[0])):
             auxb=[]
-            for i in range(1,len(self.ray[0])):
-                auxb.append(0.5*(self.ray[k][i]**2-self.ray[k][i]**2+(_x[i]-_x[0])**2+(_y[i]-_y[0])**2))
-            print(auxb)
+            for i in range(1,len(self.mray[0])):
+                auxb.append(0.5*(self.mray[k][0]**2-self.mray[k][i]**2+(_x[i]-_x[0])**2+(_y[i]-_y[0])**2))
+            
             self.b.append(auxb)
-
+#---
     def leastSquareQR(self):
         x1=[]
         q,r=linalg.qr(self.A)
         rinv=linalg.inv(r)
         qtrns=transpose(q)
         x1=matmul(rinv,qtrns)
-        print(x1) #--------------
-
+        #print(x1) #--------------
+        position=[]
+        newx=[]
+        newy=[]
         self.approXY=[]
         for k in range(len(self.robotXY[0])):
-            self.approXY.append(matmul(x1,self.b[k]))
-
+            position.append(matmul(x1,self.b[k]))
+            newx.append(position[0][0])
+            newy.append(position[0][1])
+            position=[]
+        
+        self.approXY.append(newx)
+        self.approXY.append(newy)
+        
+        
 
     def robotMove(self):
         t=linspace(0,10,100)
@@ -92,7 +112,7 @@ class test(object):
                 cy.append(self.anchors[1][k]+_R[k]*cos(teta[i]))
         self.cercles=[cx,cy]
 
-test1=test(0.1)
+test1=test(0.01)
 test1.anchorsPosition(1000)
 test1.robotMove()
 test1.rightRayons()
@@ -102,8 +122,11 @@ test1.computeAB()
 test1.leastSquareQR()
 test1.drawCercles(test1.mray[50])
 
+plt.grid(True)
+plt.plot(test1.robotXY[0],test1.robotXY[1])
+plt.plot(test1.approXY[0],test1.approXY[1],"+")
 
-print(len(test1.b))
-#plt.plot(test1.robotXY[0],test1.robotXY[1])
 plt.plot(test1.cercles[0],test1.cercles[1])
-print(test1.approXY[0])
+
+plt.plot(test1.anchors[0],test1.anchors[1],"P",markersize=15)
+#print(test1.approXY[0][0])
