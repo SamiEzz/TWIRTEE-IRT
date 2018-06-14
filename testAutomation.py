@@ -26,7 +26,7 @@ class test(object):
 
     def rightRayons(self):
         self.ray=[]
-        
+
         for k in range(len(self.robotXY[0])):
             auxray=[]
             for i in range(len(self.anchors[1])):
@@ -38,12 +38,12 @@ class test(object):
             self.ray.append(auxray)
 
     def distanceSensors(self):
-        mray=[]
+        self.mray=[]
         for k in range(len(self.robotXY[0])):
             auxmray=[]
             for i in range(len(self.anchors[1])):
                 auxmray.append(self.ray[k][i]+randint(-int(self.ray[k][i]*self.rate)-1,int(self.ray[k][i]*self.rate+1)))
-            mray.append(auxmray)
+            self.mray.append(auxmray)
     def computeA(self):
         self.A=[]
         _x=self.anchors[0]
@@ -53,12 +53,13 @@ class test(object):
             A.append([_x[i]-_x[0],_y[i]-_y[0]])
         self.A=A
     def computeAB(self):
-        position=[0,0]
         _x=self.anchors[0]
         _y=self.anchors[1]
         self.computeA()
-        auxb=[]
+        self.b=[]
+        
         for k in range(len(self.robotXY[0])):
+            auxb=[]
             for i in range(1,len(self.ray[0])):
                 auxb.append(0.5*(self.ray[k][i]**2-self.ray[k][i]**2+(_x[i]-_x[0])**2+(_y[i]-_y[0])**2))
             self.b.append(auxb)
@@ -69,7 +70,12 @@ class test(object):
         rinv=linalg.inv(r)
         qtrns=transpose(q)
         x1=matmul(rinv,qtrns)
-        print(self.b[0])
+        print(x1) #--------------
+        
+        self.approXY=[]
+        auxapprox=[]
+        for k in range(len(self.robotXY[0])):
+            self.approXY.append(matmul(x1,self.b[k]))
 
     def robotMove(self):
         t=linspace(0,10,100)
@@ -94,7 +100,9 @@ test1.robotMove()
 test1.rightRayons()
 test1.distanceSensors()
 test1.computeAB()
+#print(test1.b)
 test1.leastSquareQR()
+test1.drawCercles(test1.mray[50])
 
 plt.plot(test1.robotXY[0],test1.robotXY[1])
-plt.plot(test1.approXY[0],test1.approXY[1])
+plt.plot(test1.cercles[0],test1.cercles[1])
