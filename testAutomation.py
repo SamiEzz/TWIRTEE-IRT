@@ -57,12 +57,11 @@ class test(object):
         _x=self.anchors[0]
         _y=self.anchors[1]
         self.computeA()
-        b=[]
+        auxb=[]
         for k in range(len(self.robotXY[0])):
             for i in range(1,len(self.ray[0])):
-                b.append(0.5*(self.ray[k][0]**2-self.ray[k][i]**2+(_x[i]-_x[0])**2+(_y[i]-_y[0])**2))
-            self.b.append(b)
-        
+                auxb.append(0.5*(self.ray[k][i]**2-self.ray[k][i]**2+(_x[i]-_x[0])**2+(_y[i]-_y[0])**2))
+            self.b.append(auxb)
 
     def leastSquareQR(self):
         x1=[]
@@ -70,14 +69,7 @@ class test(object):
         rinv=linalg.inv(r)
         qtrns=transpose(q)
         x1=matmul(rinv,qtrns)
-"""
-        #aux=[]
-        for k in range(len(self.robotXY[0]))
-            for i in range(1,len(self.ray[0]))
-            #    aux.append(matmul(x1,self.b[i]))
-            #self.approXY.append(aux)
-"""
-        print(matmul(x1,self.b[0])
+        print(self.b[0])
 
     def robotMove(self):
         t=linspace(0,10,100)
