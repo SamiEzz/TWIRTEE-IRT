@@ -10,7 +10,7 @@ from numpy import *
 from math import pi
 from random import *
 
-class test(object):
+class automateSim(object):
     def __init__(self,rate=0.05):
         self.plotNum = 4           #
         self.anchors = []          # [_Xaux,_Yaux]                                       / anchorsPosition() //
@@ -23,8 +23,18 @@ class test(object):
         self.A=[]                  # [[A11,A12],...,[An1,An2]]                           / computeAB() \\ A est unique pour chaque shèma de balises
         self.b=[]                  # [[b11,...,b1n],...,[bm1,...,bmn]] m100,n4           / computeAB()  \\ b est unique pour chaque point du robot
         self.approXY = []          # [[x0,..,xn],[y0,..,yn]]                             / computeAB() -> leastSuareQR() /
-    
-    
+        self.error=[[],[],[],[],[],[]]
+
+    def index(self):
+        self.anchorsPosition(1000)
+        self.robotMove()
+        self.rightRayons()
+        self.distanceSensors()
+        self.computeAB()
+        self.leastSquareQR()
+        self.err()
+
+
     def anchorsPosition(self,delta):
         _Xaux=[0,0,delta,delta]
         _Yaux=[0,delta,delta,0]
@@ -32,6 +42,7 @@ class test(object):
 
     def rightRayons(self):
         self.ray=[]
+
         for k in range(len(self.robotXY[0])):
             auxray=[]
             position=[]
@@ -42,6 +53,7 @@ class test(object):
                 position.append([self.robotXY[0][k],self.robotXY[1][k]])
                 auxray.append(linalg.norm(xyanchor-position[i]))
             self.ray.append(auxray)
+        
 
     def distanceSensors(self):
         self.mray=[]
@@ -62,6 +74,7 @@ class test(object):
         _x=self.anchors[0]
         _y=self.anchors[1]
         self.computeA()
+#---
         self.b=[]
         for k in range(len(self.robotXY[0])):
             auxb=[]
@@ -69,6 +82,7 @@ class test(object):
                 auxb.append(0.5*(self.mray[k][0]**2-self.mray[k][i]**2+(_x[i]-_x[0])**2+(_y[i]-_y[0])**2))
             
             self.b.append(auxb)
+#---
     def leastSquareQR(self):
         x1=[]
         q,r=linalg.qr(self.A)
@@ -85,6 +99,7 @@ class test(object):
             newx.append(position[0][0])
             newy.append(position[0][1])
             position=[]
+        
         self.approXY.append(newx)
         self.approXY.append(newy)
         
@@ -106,22 +121,47 @@ class test(object):
                 cx.append(self.anchors[0][k]+_R[k]*sin(teta[i]))
                 cy.append(self.anchors[1][k]+_R[k]*cos(teta[i]))
         self.cercles=[cx,cy]
+    def err(self):
+        self.error=[[],[],[],[],[],[]]
+        for j in range(len(self.robotXY[0])):
+            distances=0
+            position=[]
+            position.append(self.robotXY[0][j])
+            position.append(self.robotXY[1][j])
+            #ray=rightRayons(position,self.anchors)
+            #mesuredRay=distanceSensors(self.rate,self.ray)
+            for i in range(len(self.mray[0])):
+                distances+=self.mray[j][i]
+            distances=distances/4
+            #approx=computeXY(mesuredRay,vector)
+            self.error[0]=linspace(0,len(self.robotXY[0]),len(self.robotXY[0]))
+            self.error[1].append(abs(self.robotXY[0][j]-self.approXY[0][j]))
+            self.error[2].append(abs(self.robotXY[1][j]-self.approXY[1][j]))
+            self.error[3].append(sqrt((self.robotXY[0][j]-self.approXY[0][j])**2 + (self.robotXY[1][j]-self.approXY[1][j])**2))
+            self.error[4].append(100*self.error[3][j]/(sqrt((self.robotXY[0][j])**2 + (self.robotXY[1][j])**2)))
+            self.error[5].append(100*self.error[3][j]/(distances))
+    def plot(self,i,title):
+        plt.figure(i)
+        plt.subplot(211)
+        plt.title(title)
+        plt.grid(True)
+        plt.plot(self.anchors[0],self.anchors[1],".",markersize=15)
+        plt.plot(self.robotXY[0],self.robotXY[1])
+        plt.plot(self.approXY[0],self.approXY[1],"+")
+        
+        plt.subplot(212)
+        plt.plot(self.robotXY[0],self.robotXY[1],)
+        plt.show
 
-test1=test(0.01)
-test1.anchorsPosition(1000)
-test1.robotMove()
-test1.rightRayons()
-test1.distanceSensors()
-test1.computeAB()
 
-test1.leastSquareQR()
-test1.drawCercles(test1.mray[50])
+test1=automateSim(0.01)
+test1.index()
+test1.plot(1,title="1% d'erreur sur la mesure")
 
-plt.grid(True)
-plt.plot(test1.robotXY[0],test1.robotXY[1])
-plt.plot(test1.approXY[0],test1.approXY[1],"+")
+test2=automateSim(0.05)
+test2.index()
+test2.plot(2,title="5% d'erreur sur la mesure")
 
-plt.plot(test1.cercles[0],test1.cercles[1])
-
-plt.plot(test1.anchors[0],test1.anchors[1],"P",markersize=15)
-#print(test1.approXY[0][0])
+test3=automateSim(0.10)
+test3.index()
+test3.plot(3,title="10% d'erreur sur la mesure")
