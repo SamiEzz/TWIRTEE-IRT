@@ -31,6 +31,9 @@ class automateSim(object):
         self.distanceSensors()
         if self.mode ==0:
             print("matrice singuliere")
+            plt.grid(True)
+            plt.plot(self.anchors[0],self.anchors[1],".",markersize=15)
+            mode=1
         else :
             self.computeAB()
             self.leastSquareQR()
@@ -145,15 +148,17 @@ class automateSim(object):
     def plot(self,i,title):
         plt.figure(i)
         plt.subplot(211)
-        plt.title(title)
         plt.grid(True)
+        plt.title(title)
         plt.plot(self.anchors[0],self.anchors[1],".",markersize=15)
         plt.plot(self.robotXY[0],self.robotXY[1])
         plt.plot(self.approXY[0],self.approXY[1],"+",color="red")
         
         plt.subplot(212)
+        plt.grid(True)
         plt.plot(self.error[0],self.error[5],)
         plt.show
+
 
 
 test1=automateSim(0.01)
@@ -182,7 +187,7 @@ test5.anchors=[[-500,0,500,1000,1500],[0,0,0,0,0]]
 #matrice singulière
 test5.mode=0
 test5.index()
-test5.drawCercles(test4.mray[10])
+test5.drawCercles(test5.ray[10])
 
 
 test6=automateSim(0.01)
