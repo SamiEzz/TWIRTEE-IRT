@@ -33,7 +33,7 @@ class automateSim(object):
         self.approXY = []          # [[x0,..,xn],[y0,..,yn]]                             / computeAB() -> leastSuareQR() /
         self.error=[[],[],[],[],[],[]]
 
-    def index(self):
+    def magic(self):
         self.robotMove()
         self.rightRayons()
         self.distanceSensors()
@@ -171,28 +171,28 @@ class automateSim(object):
 
 test1=automateSim(0.01)
 test1.anchorsPosition(1000)
-test1.index()
+test1.magic()
 test1.plot(1,title="1% d'erreur sur la mesure")
 
 test2=automateSim(0.05)
 test2.anchorsPosition(1000)
-test2.index()
+test2.magic()
 test2.plot(2,title="5% d'erreur sur la mesure")
 
 test3=automateSim(0.10)
 test3.anchorsPosition(1000)
-test3.index()
+test3.magic()
 test3.plot(3,title="10% d'erreur sur la mesure")
 
 test4=automateSim(0.05)
 test4.anchors=[[0, 0, 1000, 1000, 2500, 2500], [0, 1800, 0, 1800, 0, 1800]]
-test4.index()
+test4.magic()
 test4.plot(4,title="5% d'erreur sur la mesure")
 
 
 test5=automateSim(0.05)
 test5.anchors=[[0,580,580,2500],[0,0,2000,1000]]
-test5.index()
+test5.magic()
 test5.plot(5,title="5% d'erreur sur la mesure")
 
 plt.figure(6)
@@ -200,6 +200,17 @@ test6=automateSim(0.05)
 test6.anchors=[[0,0,500,1000,1500],[0,0,0,0,0]] 
 #matrice singulière
 test6.mode=0
-test6.index()
+test6.magic()
 plt.title("Balises alignées => matrice A singulière")
 test6.drawCercles(test6.ray[10])
+
+test7=automateSim(0.05)
+test7.anchors=[[0,580,580,2500],[0,0,2000,1000]]
+t=linspace(0,10,100)
+x=250*(t)
+y=(1000+800*cos(t))
+test7.robotXY.append(x)
+test7.robotXY.append(y)
+test7.magic()
+test7.plot(7,title="5% d'erreur sur la mesure")
+
