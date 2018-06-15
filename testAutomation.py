@@ -1,8 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jun 14 21:22:03 2018
-
-@author: Sami
+_______________________________________________________________________________
+|##                                                                         ##|
+|##                                                                         ##|
+|##                                                                         ##|
+|##         Simulation du calcul de la position par Trilateration           ##|
+|##                                                                         ##|
+|##                                                                         ##|
+|##         Tuteur     : JENN Eric                                          ##|
+|##         Auteur     : EZZEROUALI Sami                                    ##|
+|##                                                                         ##|
+|#############################################################################|
 """
 
 import matplotlib.pyplot as plt
@@ -111,8 +119,8 @@ class automateSim(object):
 
     def robotMove(self):
         t=linspace(0,10,100)
-        x=(-500+250*t)*0.8
-        y=0.8*(500+800*sin(t))
+        x=250*t
+        y=(1000+800*sin(t))
         self.robotXY.append(x)
         self.robotXY.append(y)
 
@@ -125,7 +133,7 @@ class automateSim(object):
                 cx.append(self.anchors[0][k]+_R[k]*sin(teta[i]))
                 cy.append(self.anchors[1][k]+_R[k]*cos(teta[i]))
         self.cercles=[cx,cy]
-        plt.plot(cx,cy)
+        plt.plot(cx,cy,"--",color="silver")
     def err(self):
         self.error=[[],[],[],[],[],[]]
         for j in range(len(self.robotXY[0])):
@@ -176,21 +184,22 @@ test3.anchorsPosition(1000)
 test3.index()
 test3.plot(3,title="10% d'erreur sur la mesure")
 
-test4=automateSim(0.01)
-test4.anchors=[[-160,-160,580,580,1500,1500],[-300,1500,-300,1500,-300,1500]] 
+test4=automateSim(0.05)
+test4.anchors=[[0, 0, 1000, 1000, 2500, 2500], [0, 1800, 0, 1800, 0, 1800]]
 test4.index()
-test4.plot(4,title="1% d'erreur sur la mesure")
+test4.plot(4,title="5% d'erreur sur la mesure")
 
-plt.figure(5)
-test5=automateSim(0.01)
-test5.anchors=[[-500,0,500,1000,1500],[0,0,0,0,0]] 
-#matrice singulière
-test5.mode=0
+
+test5=automateSim(0.05)
+test5.anchors=[[0,580,580,2500],[0,0,2000,1000]]
 test5.index()
-test5.drawCercles(test5.ray[10])
+test5.plot(5,title="5% d'erreur sur la mesure")
 
-
-test6=automateSim(0.01)
-test6.anchors=[[-260,580,580,1500],[500,-500,1500,500]] 
+plt.figure(6)
+test6=automateSim(0.05)
+test6.anchors=[[0,0,500,1000,1500],[0,0,0,0,0]] 
+#matrice singulière
+test6.mode=0
 test6.index()
-test6.plot(6,title="1% d'erreur sur la mesure")
+plt.title("Balises alignées => matrice A singulière")
+test6.drawCercles(test6.ray[10])
