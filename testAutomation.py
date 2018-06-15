@@ -17,7 +17,7 @@ class automateSim(object):
         self.ray=[]                # [[R11,,,R1n],...,[Rm1,...,Rmn]]                     / rightPosition()
         self.mray=[]               # [[R11,,,R1n],...,[Rm1,...,Rmn]]                     / distanceSensors()
         self.rate = rate           # 0 < rate < 1                                        / input
-        self.mode = 0              # 1,2,3 ?                                             / input
+        self.mode = 1              # 1,2,3 ?                                             / input
         self.cercles=[]            # [[Cx1,..,Cxn],[Cy1,...,Cyn]] n=720*len(ray[0])      / drawCercles()
         self.robotXY = []          # [[x1,..,xn],[y1,..,yn]]                             / robotMove()
         self.A=[]                  # [[A11,A12],...,[An1,An2]]                           / computeAB() \\ A est unique pour chaque shèma de balises
@@ -26,15 +26,16 @@ class automateSim(object):
         self.error=[[],[],[],[],[],[]]
 
     def index(self):
-        self.anchorsPosition(1000)
         self.robotMove()
         self.rightRayons()
         self.distanceSensors()
-        self.computeAB()
-        self.leastSquareQR()
-        self.err()
-
-
+        if self.mode ==0:
+            print("matrice singuliere")
+        else :
+            self.computeAB()
+            self.leastSquareQR()
+            self.err()
+            
     def anchorsPosition(self,delta):
         _Xaux=[0,0,delta,delta]
         _Yaux=[0,delta,delta,0]
@@ -121,6 +122,7 @@ class automateSim(object):
                 cx.append(self.anchors[0][k]+_R[k]*sin(teta[i]))
                 cy.append(self.anchors[1][k]+_R[k]*cos(teta[i]))
         self.cercles=[cx,cy]
+        plt.plot(cx,cy)
     def err(self):
         self.error=[[],[],[],[],[],[]]
         for j in range(len(self.robotXY[0])):
@@ -147,21 +149,43 @@ class automateSim(object):
         plt.grid(True)
         plt.plot(self.anchors[0],self.anchors[1],".",markersize=15)
         plt.plot(self.robotXY[0],self.robotXY[1])
-        plt.plot(self.approXY[0],self.approXY[1],"+")
+        plt.plot(self.approXY[0],self.approXY[1],"+",color="red")
         
         plt.subplot(212)
-        plt.plot(self.robotXY[0],self.robotXY[1],)
+        plt.plot(self.error[0],self.error[5],)
         plt.show
 
 
 test1=automateSim(0.01)
+test1.anchorsPosition(1000)
 test1.index()
 test1.plot(1,title="1% d'erreur sur la mesure")
 
 test2=automateSim(0.05)
+test2.anchorsPosition(1000)
 test2.index()
 test2.plot(2,title="5% d'erreur sur la mesure")
 
 test3=automateSim(0.10)
+test3.anchorsPosition(1000)
 test3.index()
 test3.plot(3,title="10% d'erreur sur la mesure")
+
+test4=automateSim(0.01)
+test4.anchors=[[-160,-160,580,580,1500,1500],[-300,1500,-300,1500,-300,1500]] 
+test4.index()
+test4.plot(4,title="1% d'erreur sur la mesure")
+
+plt.figure(5)
+test5=automateSim(0.01)
+test5.anchors=[[-500,0,500,1000,1500],[0,0,0,0,0]] 
+#matrice singulière
+test5.mode=0
+test5.index()
+test5.drawCercles(test4.mray[10])
+
+
+test6=automateSim(0.01)
+test6.anchors=[[-260,580,580,1500],[500,-500,1500,500]] 
+test6.index()
+test6.plot(6,title="1% d'erreur sur la mesure")
