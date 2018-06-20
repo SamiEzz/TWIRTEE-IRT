@@ -72,7 +72,6 @@ void setup() {
 void handleSent() {
   // status change on sent success
   sentAck = true;
-  Serial.print("\nSent...\n");
 }
 
 void transmitter() {
@@ -83,7 +82,8 @@ void transmitter() {
   String msg = "Hello DW1000, it's #"; msg += sentNum;
   DW1000.setData(msg);
   // delay sending the message for the given amount
-    deltaTime = DW1000Time(10, DW1000Time::MILLISECONDS);
+  DW1000Time deltaTime;
+  deltaTime = DW1000Time(10, DW1000Time::MILLISECONDS);
   DW1000.setDelay(deltaTime);
   DW1000.startTransmit();
   delaySent = millis();
@@ -106,7 +106,6 @@ void loop() {
   Serial.print("DW1000 delta send time [ms] ... "); Serial.println((newSentTime.getAsMicroSeconds() - sentTime.getAsMicroSeconds()) * 1.0e-3);
   sentTime = newSentTime;
   sentNum++;
-  delay(5000);
   // again, transmit some data
   transmitter();
 }

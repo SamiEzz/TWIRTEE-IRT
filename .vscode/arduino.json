@@ -1,5 +1,5 @@
 {
     "board": "arduino:avr:pro",
     "configuration": "cpu=8MHzatmega328",
-    "sketch": "circuitBoard/distanceSensing/unitFunctions/basicSender.ino"
+    "sketch": "circuitBoard/distanceSensing/unitFunctions/mysender.ino"
 }
