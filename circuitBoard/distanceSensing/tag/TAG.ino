@@ -30,6 +30,7 @@ void setup() {
 
 void loop() {
   DW1000Ranging.loop();
+
 }
 
 void newRange() {
@@ -37,16 +38,15 @@ void newRange() {
   tagID = (int) (DW1000Ranging.getDistantDevice()->getShortAddress());
   tagRange = (float) DW1000Ranging.getDistantDevice()->getRange();
   tagPower = (float) DW1000Ranging.getDistantDevice()->getRXPower();
- // Serial.print("FROM: ");Serial.print(tagID);Serial.print("Range: ");Serial.println(tagRange);
-
-//float a = 2.52; 
-Serial.print("\n");
-Serial.print(tagID);Serial.print(",");Serial.print(tagRange);
+  // Serial.print("FROM: ");Serial.print(tagID);Serial.print("Range: ");Serial.println(tagRange);
+  Serial.print("\n");
+  Serial.print(tagID);Serial.print(",");Serial.print(tagRange);
 }
 
 void newDevice(DW1000Device* device) {
-  Serial.print("\nNew anchor detected : ");
-  Serial.print((int) (DW1000Ranging.getDistantDevice()->getShortAddress()));
+  //Serial.print("\nAnchorID,");
+  //Serial.print((int) (DW1000Ranging.getDistantDevice()->getShortAddress()));
+
 }
 
 void inactiveDevice(DW1000Device* device) { }
