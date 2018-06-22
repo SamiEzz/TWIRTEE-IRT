@@ -14,6 +14,7 @@ int tagID;
 float tagRange;
 float tagPower;
 
+uint8_t anchorsNum=0;
 
 void setup() {
   
@@ -44,10 +45,29 @@ void newRange() {
 }
 
 void newDevice(DW1000Device* device) {
+  
+  int base[10];
+  int anchorAdd = (int) (DW1000Ranging.getDistantDevice()->getShortAddress());
+  int i=0;
+  while(i<anchorsNum){
+    if(base[i]==anchorAdd){
+      Serial.println("\nknown anchor");
+    }
+    else{
+      base[anchorsNum]=anchorAdd;
+      Serial.print("id,");Serial.print(anchorAdd);
+      anchorsNum++;
+    }
+    i++;
+  }
+
+  
   //Serial.print("\nAnchorID,");
   //Serial.print((int) (DW1000Ranging.getDistantDevice()->getShortAddress()));
 
 }
 
-void inactiveDevice(DW1000Device* device) { }
+void inactiveDevice(DW1000Device* device) { 
+  anchorsNum--;
+}
 
