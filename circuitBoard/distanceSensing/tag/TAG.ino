@@ -14,8 +14,6 @@ int tagID;
 float tagRange;
 float tagPower;
 
-uint8_t anchorsNum=0;
-
 void setup() {
   
   Serial.begin(9600);
@@ -35,39 +33,23 @@ void loop() {
 }
 
 void newRange() {
-
+  tagID=0;
   tagID = (int) (DW1000Ranging.getDistantDevice()->getShortAddress());
   tagRange = (float) DW1000Ranging.getDistantDevice()->getRange();
   tagPower = (float) DW1000Ranging.getDistantDevice()->getRXPower();
   // Serial.print("FROM: ");Serial.print(tagID);Serial.print("Range: ");Serial.println(tagRange);
-  Serial.print("\n");
-  Serial.print(tagID);Serial.print(",");Serial.print(tagRange);
+  Serial.print("\n2,");
+  Serial.print((int) (DW1000Ranging.getDistantDevice()->getShortAddress()),HEX);Serial.print(",");Serial.print(tagRange);
 }
 
 void newDevice(DW1000Device* device) {
-  
-  int base[10];
-  int anchorAdd = (int) (DW1000Ranging.getDistantDevice()->getShortAddress());
-  int i=0;
-  while(i<anchorsNum){
-    if(base[i]==anchorAdd){
-      Serial.println("\nknown anchor");
-    }
-    else{
-      base[anchorsNum]=anchorAdd;
-      Serial.print("id,");Serial.print(anchorAdd);
-      anchorsNum++;
-    }
-    i++;
-  }
-
-  
-  //Serial.print("\nAnchorID,");
-  //Serial.print((int) (DW1000Ranging.getDistantDevice()->getShortAddress()));
-
+  Serial.print("\n1,");
+  Serial.print((int) (DW1000Ranging.getDistantDevice()->getShortAddress()),HEX);
 }
 
 void inactiveDevice(DW1000Device* device) { 
-  anchorsNum--;
+  Serial.print("\n0,");
+  Serial.print((int) (DW1000Ranging.getDistantDevice()->getShortAddress()),HEX);
+  
 }
 
