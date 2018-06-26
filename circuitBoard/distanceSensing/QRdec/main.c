@@ -1,12 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
- 
+
+#define NUM_ROWS(a) ARRAYSIZE(a)
+#define NUM_COLS(a) ARRAYSIZE(a[0])
+int num_rows = NUM_ROWS(matrix);
+int num_cols = NUM_COLS(matrix);
+
 /*
 
 
 
-TODO : determinant 
+TODO : 
+#determinant 
+##def() : convert mat object to array
+
 */
 
 
