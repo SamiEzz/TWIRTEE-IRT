@@ -1,19 +1,88 @@
+import serial
+import os
+clear = lambda: os.system('cls')
 
-class Position(object):
-    def __init__(self,rate=0.05):
-        self.plotNum = 4           #
-        self.anchors = []          # [_Xaux,_Yaux]                                       / anchorsPosition() //
-        self.ray=[]                # [[R11,,,R1n],...,[Rm1,...,Rmn]]                     / rightPosition()
-        self.mray=[]               # [[R11,,,R1n],...,[Rm1,...,Rmn]]                     / distanceSensors()
-        self.rate = rate           # 0 < rate < 1                                        / input
-        self.mode = 1              # 1,2,3 ?                                             / input
-        self.cercles=[]            # [[Cx1,..,Cxn],[Cy1,...,Cyn]] n=720*len(ray[0])      / drawCercles()
-        self.robotXY = []          # [[x1,..,xn],[y1,..,yn]]                             / robotMove()
-        self.A=[]                  # [[A11,A12],...,[An1,An2]]                           / computeAB() \\ A est unique pour chaque shèma de balises
-        self.b=[]                  # [[b11,...,b1n],...,[bm1,...,bmn]] m100,n4           / computeAB()  \\ b est unique pour chaque point du robot
-        self.approXY = []          # [[x0,..,xn],[y0,..,yn]]                             / computeAB() -> leastSuareQR() /
-        self.error=[[],[],[],[],[],[]]
+distances = open("distances.txt","w")
+distances.write("id , distance\n")
+anchors=[]
+distances=[]
 
-def serialConnect(){
+#=======================Class def======================================
+class TAG(object):
+    def __init__(self):
+        self.sline=-1
+        #self.lastState=-1
+        self.devices=[]
+        self.theBigMatrix=[]
+        self.anchorsNumber=0
+        self.anchorsid=[]   #
+        self.rangeVal=[]    #
+        self.tagPort='/dev/ttyUSB0'
+        self.tagBaud=19200
+    def loop(self):
+        while True:
+            id=-1
+            range=-1
+            if (ser.inWaiting()>0):
+                
+                var=ser.readline()
+                self.sline = var.decode("utf-8")
+                ordre=self.sline[0]
+
+                #print("Frame : "+ self.sline[:len(self.sline)-1])
+                #print("Ordre : "+ ordre)
+                
+                if(ordre=="0"):
+                    id=self.sline[2:len(self.sline)-1]
+                    self.lostDevice(id)
+                elif(ordre=="1"):
+                    id=self.sline[2:]
+                    self.newDevice(id)
+                elif(ordre=="2"):
+                    idrange=self.sline[2:]
+                    id=idrange[:idrange.find(",")]
+                    range=idrange[idrange.find(",")+1:len(idrange)-1]
+                    self.newRange(id,range)
+                #else:
+                    #print("useless ordre")
+    #def idToNum(self):
+    def isKnownId(self):
+        while(i<=len(self.anchorsid)):
+            if(self.anchorsid[i]==id):
+                return True
+            i+=1
+        
+    def newDevice(self,id):
+        self.anchorsNumber+=1
+        
+        i=0
+        
+
+
+        print("new device : "+id)
+    def lostDevice(self,id):
+        self.anchorsNumber-=1
+        while(i<=len(self.anchorsid)):
+            if(self.anchorsid[i]==id):
+                self.anchorsNumber+=1
+            i+=1
+        print("Lost device : "+id)
+    def newRange(self,id,range):
+        while(i<=len(self.anchorsid)):
+            if(self.anchorsid[i]==id):
+                self.anchorsNumber-=1
+            i+=1
+        print(id + " : " + range + " [m]")
+        distances.write(id + " , " + range +"\n")
+    #-------------------Setters------------------------
+
     
-}
+
+#=====================================================================
+ser = serial.Serial(port="/dev/ttyUSB0", baudrate=19200, timeout=1,writeTimeout=1)
+tag = TAG()
+tag.loop()
+distances.close()
+
+
+
