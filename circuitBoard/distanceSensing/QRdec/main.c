@@ -2,6 +2,14 @@
 #include <stdlib.h>
 #include <math.h>
  
+/*
+
+
+
+TODO : determinant 
+*/
+
+
 typedef struct {
 	int m, n;
 	double ** v;
@@ -162,28 +170,41 @@ void householder(mat m, mat *R, mat *Q)
 	*R = z;
 	matrix_transpose(*Q);
 }
- 
+
 double in[][3] = {
-	{ 12, -51,   4},
-	{  6, 167, -68},
-	{ -4,  24, -41},
-	{ -1, 1, 0},
-	{ 2, 0, 3},
+	{ 12, -5,   1},
+	{  2, -40, 6},
+	{ -70,  1, 1},
+	{ 89, 69, -1},
+	{ 20, 60, -2},
 };
- 
+double bmat[][1]={2037,5757,1581,-1047,-3510};
+
+double computeX(double A[][3],double B[],int n){
+	mat R,Q;
+	mat A = matrix_copy(3,A,n)
+}
+
 int main()
 {
 	mat R, Q;
 	mat x = matrix_copy(3, in, 5);
+	mat b = matrix_copy(1,bmat,5);
 	householder(x, &R, &Q);
- 
+	puts("x");matrix_show(x);
 	puts("Q"); matrix_show(Q);
 	puts("R"); matrix_show(R);
- 
+	matrix_transpose(Q);
 	// to show their product is the input matrix
 	mat m = matrix_mul(Q, R);
-	puts("Q * R"); matrix_show(m);
- 
+	mat xyz=matrix_mul(b,m);
+	puts("Q * R"); 
+	matrix_show(m);
+	puts("xyz :");
+	matrix_show(xyz);
+
+
+	matrix_delete(xyz);
 	matrix_delete(x);
 	matrix_delete(R);
 	matrix_delete(Q);
