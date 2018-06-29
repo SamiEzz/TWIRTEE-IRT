@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
 #include <math.h>
 
 typedef struct {
@@ -38,6 +40,7 @@ void matrix_transpose(mat m)
 		}
 	}
 }
+
  
 mat matrix_copy(int n, double a[][n], int m)
 {
@@ -164,4 +167,77 @@ void householder(mat m, mat *R, mat *Q)
 	*R = z;
 	matrix_transpose(*Q);
 }
+
+void matrix_cofactors(mat m, mat temp, int p, int q, int n)
+{
+	int i=0, j=0;
+	for(int row=0; row<n;row++){
+		for(int col=0; col<n;col++){
+			if(row!=p && col !=q){
+				temp->v[i][j++] = m->v[row][col];
+
+				if(j==n-1){
+					j=0;
+					i++;
+				}
+			}
+		}
+	}
+}
+
+float matrix_det(mat m, int n){
+	int D=0;
+	if(n==1)
+		return m->v[0][0];
+	mat temp=matrix_new(m->n, n);
+	int sign=1;
+	for (int f=0;f<n;f++){
+		matrix_cofactors(m,temp,0,f,n);
+		D+= sign*m->v[0][f] * matrix_det(temp, n-1);
+		sign=-sign;
+
+	}
+	return D;
+}
+
+void matrix_adjoint(mat m, mat adj){
+	int _N=m->n;
+	// Function to get adjoint of m in adj
+	if(_N==1){
+		adj->v[0][0]=1;
+		return;
+	}
+	//Temp is used to store cofactors of "m"
+	int sign=1;
+	mat temp=matrix_new(_N,_N);
+	for(int i=0;i<_N;i++){
+		for(int j=0;j<_N;j++){
+			matrix_cofactors(m,temp,i,j,_N);
+			// is (i+j) pair or impair, to fill sign with 1 or -1
+			sign = ((i+j)%2==0)?1:-1;
+			adj->v[j][i]=sign*(matrix_det(temp,_N-1));
+		}
+	}
+
+}
+
+bool matrix_inv(mat m,mat inv){
+	int _N=m->n;
+	float det=matrix_det(m,_N);
+	if (det==0){
+		printf("Matrice singuliere ..");
+		return false;
+	}
+	// Find adjoint*
+	mat adj=matrix_new(_N,_N);
+	matrix_adjoint(m,adj);
+	
+	// finding inverse using "inverse(A)=adj(A)/det(A)"
+	for(int i=0;i<_N;i++){
+		for (int j=0;j<_N;j++){
+			inv->v[i][j]=adj->v[i][j]/det;
+		}
+	}
+	return true;
+}	
  
